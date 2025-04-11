@@ -27,57 +27,11 @@ df = get_df('sample_csv')
 # # Show the data
 # table(df)
 
-#* Total Global Sales Grouped By Gaming Systems
-sql = "SELECT Platform, SUM(Global_Sales) as Total_Global_Sales FROM sample_csv GROUP BY Platform"
-df_platform_sales = query(sql, "sample_csv")
-
-text("# Global Sales Performance From All Gaming Systems")
-fig = px.bar(df_platform_sales, x='Platform', y='Total_Global_Sales', title='Total Global Sales by Gaming System Platform')
-plotly(fig)
-
-#** Top 10 Best Sellers Globally
+#* Top 10 Games by Global Sale Numbers
 sql = "SELECT Name, Global_Sales FROM sample_csv ORDER BY Global_Sales DESC LIMIT 10"
 df_top_games = query(sql, "sample_csv")
 
-text("# Top 10 Best Sellers (Globally)")
-fig = px.bar(df_top_games, x='Global_Sales', y='Name', orientation='h', title="Top 10 Best Selling Games")
-plotly(fig)
+text("# Top 10 Best-Selling Games Globally")
+fig = px.bar(df_top_games, x='Name', y='Global_Sales', title='Top 10 Games By Global Sales')
 
-#* Regional Sales Breakdown by Platform 
-sql = """ 
-SELECT Platform, 
-    SUM(NA_Sales) as NA_Sales,
-    SUM(EU_Sales) as EU_Sales,
-    SUM(JP_Sales) as JP_Sales,
-    SUM(Other_Sales) as Other_Sales
-FROM sample_csv
-GROUP BY Platform
-"""
-
-text('# Regional Sales Breakdown by Gaming System')
-df_region_sales = query(sql, "sample_csv")
-fig = px.bar(df_region_sales, x='Platform', y=['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales'], barmode='stack', title='Regional Sales Breakdown by Gaming Platform')
-plotly(fig)
-
-#* Global Sales Distribution by Gaming Genre
-sql = "SELECT Genre, SUM(Global_Sales) AS Total_Global_Sales FROM sample_csv GROUP BY Genre"
-df_genre_sales = query(sql, "sample_csv")
-
-fig = px.pie(df_genre_sales, names='Genre', values='Total_Global_Sales', title='Global Sales Distribution by Genre')
-plotly(fig)
-
-#* Global Sales Per Year
-sql = "SELECT Year, SUM(Global_Sales) AS Total_Global_Sales FROM sample_csv GROUP BY Year ORDER BY Year"
-df_yearly_sales = query(sql, "sample_csv")
-
-fig = px.line(df_yearly_sales, x='Year', y='Total_Global_Sales', markers=True, title='Total Global Sales per Year')
-plotly(fig)
-
-
-#* NA vs. EU Sale Numbers 
-sql = "SELECT NA_Sales, EU_Sales, Platform, Global_Sales FROM sample_csv"
-df_sales_scatter = query(sql, "sample_csv")
-
-fig = px.scatter(df_sales_scatter, x='NA_Sales', y='EU_Sales', color='Platform', size='Global_Sales',
-                 title='NA vs EU Sales (Colored by Platform)')
 plotly(fig)
